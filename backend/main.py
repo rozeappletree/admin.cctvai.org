@@ -115,11 +115,6 @@ build_dir = os.path.abspath(
 )
 
 
-@app.get("/{full_path:path}")
-async def serve_react_app(full_path: str):
-    return FileResponse(os.path.join(build_dir, "index.html"))
-
-
 @app.post("/api/token", response_model=Token)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
     if not (form_data.username == USERNAME and form_data.password == PASSWORD):
@@ -178,3 +173,8 @@ async def validate_config(
 app.mount(
     "/static", StaticFiles(directory=os.path.join(build_dir, "static")), name="static"
 )
+
+
+@app.get("/{full_path:path}")
+async def serve_react_app(full_path: str):
+    return FileResponse(os.path.join(build_dir, "index.html"))
