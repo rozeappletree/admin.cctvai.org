@@ -9,5 +9,12 @@
   "buildpacks": [
     { "url": "heroku/nodejs" },
     { "url": "heroku/python" }
-  ]
+  ],
+  "healthcheck": {
+    "web": {
+      "path": "/",
+      "timeout": 120,
+      "retries": 5
+    }
+  }
 }
