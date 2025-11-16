@@ -15,9 +15,9 @@ import xml.etree.ElementTree as ET  # Import for XML parsing
 load_dotenv()
 
 # --- Configuration ---
-SECRET_KEY = os.getenv("SECRET_KEY")
-USERNAME = os.getenv("USERNAME")
-PASSWORD = os.getenv("PASSWORD")
+SECRET_KEY = os.getenv("SECRET_KEY", "a_secret_key")
+USERNAME = os.getenv("USERNAME", "admin")
+PASSWORD = os.getenv("PASSWORD", "password")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
