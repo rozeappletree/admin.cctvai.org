@@ -5,5 +5,9 @@
     "dokku",
     "fastapi",
     "react"
+  ],
+  "buildpacks": [
+    { "url": "heroku/nodejs" },
+    { "url": "heroku/python" }
   ]
 }

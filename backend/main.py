@@ -99,12 +99,15 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Allows frontend to connect
+    allow_origins=[
+        "http://localhost:3000",
+        "http://admin.cctvai.org",
+        "https://admin.cctvai.org",
+    ],  # Allows frontend to connect
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 # The --chdir flag in the Procfile makes the /backend directory the current working directory.
 # We need to go up one level to find the /frontend/build directory.
 build_dir = os.path.abspath(
@@ -116,12 +119,7 @@ app.mount(
 )
 
 
-@app.get("/{full_path:path}")
-async def serve_react_app(full_path: str):
-    return FileResponse(os.path.join(build_dir, "index.html"))
-
-
-@app.post("/token", response_model=Token)
+@app.post("/api/token", response_model=Token)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
     if not (form_data.username == USERNAME and form_data.password == PASSWORD):
         raise HTTPException(
@@ -136,7 +134,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-@app.get("/dashboard/")
+@app.get("/api/dashboard/")
 async def read_dashboard(current_user: User = Depends(get_current_active_user)):
     return {"message": f"Welcome to your dashboard, {current_user.full_name}!"}
 
@@ -144,7 +142,7 @@ async def read_dashboard(current_user: User = Depends(get_current_active_user)):
 EXPECTED_CONFIG_FILE = """<cameras><camera id="CAM-A1X" ip="10.12.34.5" rtsp="rtsp://u1:p1@10.12.34.5/"/><camera id="CAM-B7Q" ip="10.88.22.14" rtsp="rtsp://u2:p2@10.88.22.14/"/><camera id="CAM-C9M" ip="192.168.42.77" rtsp="rtsp://u3:p3@192.168.42.77/"/><camera id="CAM-D4Z" ip="172.16.8.201" rtsp="rtsp://u4:p4@172.16.8.201/"/><meta version="1.0" generated="TS-001"/></cameras>"""
 
 
-@app.post("/validate-config")
+@app.post("/api/validate-config")
 async def validate_config(
     config_file: UploadFile = File(...),
     current_user: User = Depends(get_current_active_user),
@@ -174,3 +172,8 @@ async def validate_config(
         return {"valid": False, "message": "Invalid XML format."}
     except Exception as e:
         return {"valid": False, "message": f"An error occurred during validation: {e}"}
+
+
+@app.get("/{full_path:path}")
+async def serve_react_app(full_path: str):
+    return FileResponse(os.path.join(build_dir, "index.html"))
