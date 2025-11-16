@@ -114,9 +114,10 @@ build_dir = os.path.abspath(
     os.path.join(os.path.dirname(__file__), "..", "frontend", "build")
 )
 
-app.mount(
-    "/static", StaticFiles(directory=os.path.join(build_dir, "static")), name="static"
-)
+
+@app.get("/{full_path:path}")
+async def serve_react_app(full_path: str):
+    return FileResponse(os.path.join(build_dir, "index.html"))
 
 
 @app.post("/api/token", response_model=Token)
@@ -174,6 +175,6 @@ async def validate_config(
         return {"valid": False, "message": f"An error occurred during validation: {e}"}
 
 
-@app.get("/{full_path:path}")
-async def serve_react_app(full_path: str):
-    return FileResponse(os.path.join(build_dir, "index.html"))
+app.mount(
+    "/static", StaticFiles(directory=os.path.join(build_dir, "static")), name="static"
+)
