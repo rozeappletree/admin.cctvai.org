@@ -68,7 +68,7 @@ const DashboardPage: React.FC = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.post('/validate-config', formData, {
+      const response = await axios.post('/api/validate-config', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`,

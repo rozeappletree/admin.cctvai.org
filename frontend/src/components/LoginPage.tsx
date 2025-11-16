@@ -22,7 +22,7 @@ const LoginPage: React.FC = () => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
-      const response = await axios.post('/token', new URLSearchParams({
+      const response = await axios.post('/api/token', new URLSearchParams({
         username,
         password,
       }));
